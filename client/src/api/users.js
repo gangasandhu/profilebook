@@ -7,4 +7,9 @@ const getUsers = async () => {
   return response.data;
 }
 
-export { getUsers };
+const getUser = async (id) => {
+  const response = await axios.get(`${baseURL}/users/${id}`);
+  return response.data;
+}
+
+export { getUsers, getUser };

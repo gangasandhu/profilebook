@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   BrowserRouter as Router,
   Routes, Route, Link
@@ -6,20 +5,20 @@ import {
 import './App.css'
 import Home from './pages/Home'
 import Navbar from './components/Navbar'
+import Profile from './pages/Profile'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
       <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/profile/:id" element={<Profile />} />
 
-      
-    </Router>
+        </Routes>
+      </Router>
     </>
   )
 }
