@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import UserCard from '../components/UserCard'
 import { getUsers } from '../api/users.js'
+import { useUser } from '../context/UserContext.jsx'
 
 const Home = () => {
+    const { user } = useUser();
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
