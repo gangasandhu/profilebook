@@ -1,9 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useUser } from '../context/UserContext'
+import { useUser } from '../../context/UserContext'
+import Logout from './Logout'
+import UserNav from './UserNav'
 
 const Navbar = () => {
     const { user, setUser } = useUser()
+
     return (
         // navbar in tailwind css
         <nav className="bg-gray-100 p-4">
@@ -13,21 +16,14 @@ const Navbar = () => {
                     <li>
                         <Link to="/" className="text-gray-900">Home</Link>
                     </li>
-
-                    <li>
-                        <Link to="/add" className="text-gray-900">Register</Link>
-                    </li>
                 </ul>
                 <div>
 
                     {
                         user ? (
-                            <div>
-                                {user.username}
-                                {/* <button onClick={() => setUser(null)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Logout</button> */}
-                            </div>
+                            <UserNav user={user} />
                         ) : (
-                            <Link to="/register" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Register</Link>
+                            <Link to="/login" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Login</Link>
                         )
                     }
                 </div>
