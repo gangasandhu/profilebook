@@ -16,11 +16,14 @@ const Home = () => {
     }, []);
 
     return (
-        <div>
-            <h1>ProfileBook</h1>
+        <div className='container mx-auto p-8'>
+            <h1 className='text-3xl font-extrabold'>ProfileBook</h1>
+            <div className='container mx-auto flex flex-wrap gap-4 justify-center'>
             {users && users.map(user => (
                 <UserCard key={user.id} user={user} />
+                
             ))}
+            </div>
 
         </div>
     )

@@ -12,4 +12,9 @@ const getUser = async (id) => {
   return response.data;
 }
 
-export { getUsers, getUser };
+const updateUser = async(id, data) => {
+  const response = await axios.put(`${baseURL}/users/${id}`, data);
+  return response.data;
+}
+
+export { getUsers, getUser, updateUser };
