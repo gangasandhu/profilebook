@@ -38,18 +38,19 @@ const UserForm = ({ formType, onSubmit, initialData = {}, errors = {} }) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            {formType === 'register' && renderField('Username', 'text', 'username', 'Enter your username')}
+            {(formType === 'register' || formType === 'profile') && renderField('Username', 'text', 'username', 'Enter your username')}
             {renderField('Email', 'email', 'email', 'Enter your email')}
-            {formType === 'register' && renderField('First Name', 'text', 'firstname', 'Enter your first name')}
-            {formType === 'register' && renderField('Last Name', 'text', 'lastname', 'Enter your last name')}
-            {renderField('Password', 'password', 'password', 'Enter your password')}
+            {(formType === 'register' || formType === 'profile') && renderField('First Name', 'text', 'firstname', 'Enter your first name')}
+            {(formType === 'register' || formType === 'profile')  && renderField('Last Name', 'text', 'lastname', 'Enter your last name')}
+            {formType === 'profile'  && renderField('Bio', 'text', 'bio', 'Enter your bio')}
+            {formType !== 'profile' && renderField('Password', 'password', 'password', 'Enter your password')}
 
             <button
                 type="submit"
                 className={`w-full py-3 text-white bg-blue-500 hover:bg-blue-600 rounded-md ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 disabled={isSubmitting}
             >
-                {isSubmitting ? 'Submitting...' : formType === 'register' ? 'Register' : 'Login'}
+                {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
         </form>
     );

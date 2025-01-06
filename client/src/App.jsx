@@ -11,6 +11,7 @@ import { useEffect } from 'react'
 import { getAuthUser } from './api/auth'
 import Register from './pages/Register'
 import Login from './pages/Login'
+import EditProfile from './pages/EditProfile'
 
 
 function App() {
@@ -31,6 +32,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/profile/edit/:id" element={<EditProfile />} />
+
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
 
