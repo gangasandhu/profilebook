@@ -6,6 +6,9 @@ import sharp from 'sharp';
 import { s3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '../config/s3.js'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import crypto from 'crypto'
+import { cacheUser, invalidateUserCache } from '../middleware/redis.js';
+import redisClient from "../config/redis.js";
+
 
 const userRouter = Router();
 
@@ -29,6 +32,7 @@ userRouter.get('/', async (req, res) => {
         user.image = await getImageUrl(user.image)
       }
     }
+
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -44,7 +48,14 @@ userRouter.post('/', async (req, res) => {
       'INSERT INTO users (username, email, firstname, lastname, bio) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [username, email, firstname, lastname, bio]
     );
-    res.status(201).json(result.rows[0]);
+    const user = result.rows[0];
+    // cache the user
+    await redisClient.set(`user:${user.id}`, JSON.stringify(user), {
+      EX: 3600,
+      NX: true
+    });
+
+    res.status(201).json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -52,7 +63,7 @@ userRouter.post('/', async (req, res) => {
 
 
 // Get a single user by id
-userRouter.get('/:id', async (req, res) => {
+userRouter.get('/:id', cacheUser, async (req, res) => {
   const { id } = req.params;
   try {
     const result = await db.query('SELECT id, username, email, firstname, lastname, bio, image FROM users WHERE id = $1', [id]);
@@ -63,6 +74,10 @@ userRouter.get('/:id', async (req, res) => {
     if (user.image) {
       user.image = await getImageUrl(user.image)
     }
+    await redisClient.set(`user:${id}`, JSON.stringify(user), {
+      EX: 3600,
+      NX: true
+    });
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -71,18 +86,20 @@ userRouter.get('/:id', async (req, res) => {
 );
 
 // Update a user
-userRouter.put('/:id', async (req, res) => {
+userRouter.put('/:id', invalidateUserCache, async (req, res) => {
   const { id } = req.params;
   const { username, email, firstname, lastname, bio } = req.body;
   try {
     const result = await db.query(
-      'UPDATE users SET username = $1, email = $2, firstname = $3, lastname = $4, bio = $5 WHERE id = $6 RETURNING username, email, firstname, lastname, bio, id',
+      'UPDATE users SET username = $1, email = $2, firstname = $3, lastname = $4, bio = $5 WHERE id = $6 RETURNING id, username, email, firstname, lastname, bio',
       [username, email, firstname, lastname, bio, id]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-    res.json(result.rows[0]);
+    const updatedUser = result.rows[0];
+
+    res.json(updatedUser);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -90,7 +107,7 @@ userRouter.put('/:id', async (req, res) => {
 );
 
 // upload a profile picture
-userRouter.put('/:id/profilePicture', upload.single('image'), async (req, res) => {
+userRouter.put('/:id/profilePicture', invalidateUserCache, upload.single('image'), async (req, res) => {
   const { id } = req.params;
   const file = req.file;
 
@@ -117,6 +134,12 @@ userRouter.put('/:id/profilePicture', upload.single('image'), async (req, res) =
     );
     const user = result.rows[0]
     user.image = await getImageUrl(user.image)
+
+    // cache the user
+    await redisClient.set(`user:${user.id}`, JSON.stringify(user), {
+      EX: 180,
+      NX: true
+    });
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });

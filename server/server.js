@@ -5,9 +5,9 @@ import cors from 'cors';
 import db from './db/db.js';
 import userRouter from './controllers/user.js';
 import authRouter from './controllers/auth.js';
-
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 
 app.use(cors());
 app.use(express.json());
