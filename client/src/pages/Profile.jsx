@@ -27,6 +27,7 @@ const Profile = () => {
             <div className='container mx-auto'>
                 {profile ? (
                     <div className="border p-4 my-4">
+                        <img src={profile.image} alt={profile.username} className="rounded-full w-[300px] h-[300px] object-cover mx-auto" />
                         <h2 className="text-xl font-semibold">{profile.username}</h2>
                         <p className="text-gray-500">{profile.email}</p>
                         {user?.id === parseInt(id) && (

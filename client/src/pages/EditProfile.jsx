@@ -3,6 +3,7 @@ import { useUser } from '../context/UserContext'
 import UserForm from '../components/UserForm'
 import { useNavigate } from 'react-router-dom'
 import { updateUser } from '../api/users'
+import ImageUpload from '../components/ImageUpload'
 
 const EditProfile = () => {
     const { user, setUser } = useUser()
@@ -42,6 +43,8 @@ const EditProfile = () => {
         return (
             <div className='container mx-auto p-8 lg:w-1/2'>
                 <h1 className='text-3xl my-8'>Edit Profile</h1>
+                <ImageUpload />
+                <hr className='my-10' />
                 {user && <UserForm formType='profile' onSubmit={handleEdit} initialData={user} errors={errors} />}
 
             </div>

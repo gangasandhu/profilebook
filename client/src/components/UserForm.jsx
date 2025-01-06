@@ -38,10 +38,10 @@ const UserForm = ({ formType, onSubmit, initialData = {}, errors = {} }) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            {formType === 'register' || 'profile' && renderField('Username', 'text', 'username', 'Enter your username')}
+            {(formType === 'register' || formType === 'profile') && renderField('Username', 'text', 'username', 'Enter your username')}
             {renderField('Email', 'email', 'email', 'Enter your email')}
-            {formType === 'register' || 'profile' && renderField('First Name', 'text', 'firstname', 'Enter your first name')}
-            {formType === 'register' || 'profile'  && renderField('Last Name', 'text', 'lastname', 'Enter your last name')}
+            {(formType === 'register' || formType === 'profile') && renderField('First Name', 'text', 'firstname', 'Enter your first name')}
+            {(formType === 'register' || formType === 'profile')  && renderField('Last Name', 'text', 'lastname', 'Enter your last name')}
             {formType === 'profile'  && renderField('Bio', 'text', 'bio', 'Enter your bio')}
             {formType !== 'profile' && renderField('Password', 'password', 'password', 'Enter your password')}
 

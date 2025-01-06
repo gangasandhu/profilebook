@@ -12,13 +12,8 @@ const Navbar = () => {
         <nav className="bg-gray-100 p-4">
             <div className="mx-auto flex justify-between items-center">
                 <Link to="/" className="text-gray-900 text-2xl">ProfileBook</Link>
-                <ul className="flex space-x-4">
-                    <li>
-                        <Link to="/" className="text-gray-900">Home</Link>
-                    </li>
-                </ul>
+               
                 <div>
-
                     {
                         user ? (
                             <UserNav user={user} />
