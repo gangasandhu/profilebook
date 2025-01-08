@@ -1,0 +1,52 @@
+services:
+
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+   
+  db:
+    image: postgres:17.2
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: profilebook
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+
+  server:
+    image: profilebook-server
+    build: ./server
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379
+    env_file:
+      - ./server/.env
+    depends_on:
+      - db
+      - redis
+ 
+    
+
+  client:
+    image: profilebook-client
+    build: ./client
+    ports:
+      - "80:80"
+    env_file:
+      - ./client/.env
+    depends_on:
+      - server
+
+
+volumes:
+  postgres-data:
+
+
